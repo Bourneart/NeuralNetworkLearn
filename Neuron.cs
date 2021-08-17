@@ -37,6 +37,15 @@ namespace NeuralNetwork
             return result;
         }
 
+        public void SetWeights (params double[] weights)
+        {
+            //TODO: Удалить этот метод после проверки
+            for (int i = 0; i < weights.Length; i++)
+            {
+                Weights[i] = weights[i];
+            }
+        }
+
         public override string ToString()
         {
             return Output.ToString();
