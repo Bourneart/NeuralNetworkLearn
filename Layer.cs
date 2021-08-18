@@ -5,7 +5,7 @@ namespace NeuralNetwork
     public class Layer //Класс слоя
     {
         public List<Neuron> Neurons { get; } //Массив с количеством нейронов
-        public int Count => Neurons?.Count ?? 0; //Количество нейронов (с проверкой на null)
+        public int NeuronCount => Neurons?.Count ?? 0; //Количество нейронов (с проверкой на null)
 
         public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Normal)
         {
