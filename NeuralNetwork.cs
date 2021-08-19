@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NeuralNetwork
@@ -31,6 +32,22 @@ namespace NeuralNetwork
             {
                 return Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
             }
+        }
+
+        public double Learn(List<Tuple<double, double[]>> dataset, int epoch)
+        {
+            var error = 0.0;
+
+            for(int i = 0; i < epoch; i++)
+            {
+                foreach (var data in dataset)
+                {
+                    error += Backpropagation(data.Item1, data.Item2);
+                }
+            }
+
+            var result = error / epoch;
+            return result;
         }
 
         private double Backpropagation(double expected, params double[] inputs)
