@@ -34,20 +34,33 @@ namespace NeuralNetwork
             }
         }
 
-        public double Learn(List<Tuple<double, double[]>> dataset, int epoch) //Обучение нейронной сети
+        public double Learn(double[] expected, double[,] inputs, int epoch) //Обучение нейронной сети
         {
             var error = 0.0;
-
-            for(int i = 0; i < epoch; i++)
+            for (int i = 0; i < epoch; i++)
             {
-                foreach (var data in dataset)
+                for (int j = 0; j < expected.Length; j++)
                 {
-                    error += Backpropagation(data.Item1, data.Item2);
+                    var output = expected[j];
+                    var input = GetRow(inputs, j);
+
+                    error += Backpropagation(output, input);
                 }
             }
-
             var result = error / epoch;
             return result;
+        }
+
+        public static double[] GetRow(double[,] matrix, int row)
+        {
+            var cols = matrix.GetLength(1);
+            var array = new double[cols];
+
+            for(int i = 0; i < cols; i++)
+            {
+                array[i] = matrix[row, i];
+            }
+            return array;
         }
 
         private double[,] Scalling(double[,] inputs) //Алгоритм масштабирования нейронной сети
