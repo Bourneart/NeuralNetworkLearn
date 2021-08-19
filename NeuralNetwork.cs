@@ -34,7 +34,7 @@ namespace NeuralNetwork
             }
         }
 
-        public double Learn(List<Tuple<double, double[]>> dataset, int epoch)
+        public double Learn(List<Tuple<double, double[]>> dataset, int epoch) //Обучение нейронной сети
         {
             var error = 0.0;
 
@@ -50,7 +50,71 @@ namespace NeuralNetwork
             return result;
         }
 
-        private double Backpropagation(double expected, params double[] inputs)
+        private double[,] Scalling(double[,] inputs) //Алгоритм масштабирования нейронной сети
+        {
+            var result = new double[inputs.GetLength(0), inputs.GetLength(1)];
+
+            for(int col = 0; col < inputs.GetLength(1); col++)
+            {
+                var min = inputs[0, col];
+                var max = inputs[0, col];
+
+                for(int row = 1; row < inputs.GetLength(0); row++)
+                {
+                    var item = inputs[row, col];
+
+                    if(item < min)
+                    {
+                        min = item;
+                    }
+                    if(item > max)
+                    {
+                        max = item;
+                    }
+                }
+                var divider = max - min;
+                for (int row = 1; row < inputs.GetLength(0); row++)
+                {
+                    result[row, col] = (inputs[row, col] - min) / divider;
+                }
+            }
+
+            return result;
+        }
+
+        private double[,] Normalization(double[,] inputs) //Алгоритм нормализации нейронной сети
+        {
+            var result = new double[inputs.GetLength(0), inputs.GetLength(1)];
+
+            for (int col = 0; col < inputs.GetLength(1); col++)
+            {
+                //Вычисляем среднее значение сигнала нейрона
+                var sum = 0.0;
+                for (int row = 0; row < inputs.GetLength(0); row++)
+                {
+                    sum += inputs[row, col];
+                }
+                var average = sum / inputs.GetLength(0);
+
+                //Вычисляем значение стандартного квадратичного отклонения сигнала нейрона
+                var error = 0.0;
+                for (int row = 0; row < inputs.GetLength(0); row++)
+                {
+                    error += Math.Pow((inputs[row, col] - average), 2);
+                }
+                var standartError = Math.Sqrt(error / inputs.GetLength(0));
+
+                //Вычисляем и записываем новое значение сигнала нейрона
+                for (int row = 0; row < inputs.GetLength(0); row++)
+                {
+                    result[row, col] = (inputs[row, col] - average) / standartError;
+                }
+            }
+
+            return result;
+        }
+
+            private double Backpropagation(double expected, params double[] inputs) //Алгоритм обратного распространения ошибки для обучения нейронной сети
         {
             var actual = FeedForward(inputs).Output;
             var difference = actual - expected;
